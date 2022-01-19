@@ -2,7 +2,7 @@
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
-from gi.repository import Gtk, Gio # type: ignore
+from gi.repository import Gtk, Gio, GLib # type: ignore
 # fmt: on
 
 from steam_user_badges import SteamUserBadges
@@ -11,6 +11,7 @@ from gui.scafl_window import ScaflWindow
 from threading import Timer
 import settings
 import time
+import threading
 import startup
 import subprocess
 
@@ -28,6 +29,7 @@ class Application(Gtk.Application):
         self.badges_to_idle = []
         self._cycles_without_card_drops = 0
         self._idling_badge_id = 0
+        self._badge_loading_thread = None
         self.window = None
         self._new_timer()
 
@@ -152,15 +154,30 @@ class Application(Gtk.Application):
         self._cycles_without_card_drops += 1
         self._idle_timer.start()
 
-    def load_badges(self):
+    def _thread_load_badges_func(self):
         if self.steam_user_badges is None or self.window is None:
             return
 
-        self.window.show_loading_screen()
         self.badges_to_idle = self.steam_user_badges.get_badges_with_remaining_drops()
-        self.window.set_badge_list(self.badges_to_idle)
-        self.window.show_badges_screen()
-        self.window.set_idle_button_active(len(self.badges_to_idle) > 0)
+        GLib.idle_add(self.window.set_badge_list, self.badges_to_idle)
+        GLib.idle_add(self.window.show_badges_screen)
+        GLib.idle_add(self.window.set_idle_button_active, len(self.badges_to_idle) > 0)
+        self._badge_loading_thread = None
+
+    def load_badges(self):
+        if (
+            self.steam_user_badges is None
+            or self.window is None
+            or self._badge_loading_thread is not None
+        ):
+            return
+
+        self.window.show_loading_screen()
+        self.window.set_idle_button_active(False)
+        self._badge_loading_thread = threading.Thread(
+            target=self._thread_load_badges_func
+        )
+        self._badge_loading_thread.start()
 
     def _on_steam_login_webview_close(self, widget):
         if self.window is None:
