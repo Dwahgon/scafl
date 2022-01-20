@@ -17,12 +17,13 @@ To install ScafL on your system, you need to ensure that GTK and PyGObject is in
 Then run the following command on your terminal:
 
 ```sh
+$ pip install scafl
 $ python -m scafl
 ```
 
 ### Installing inside a virtual environment
 
-If you want to install the project in a virtual environment, to avoid any dependency conflict, first ensure venv is installed. Then, run the following
+If you want to install the project in a virtual environment, to avoid any dependency conflict, first ensure venv is installed. Then, run the following:
 
 ```sh
 $ python -m venv /path/to/your/virtual/environment
@@ -44,7 +45,7 @@ $ source /path/to/your/virtual/environment/bin/activate
 To run ScafL, run this command on your terminal:
 
 ```sh
-python -m scafl
+(env) $ python -m scafl
 ```
 
 To exit the virtual environment, run:
