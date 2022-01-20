@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-sys.path.insert(0, '..')
 
-from application import Application
+from scafl.application import Application
 
 
 def main():

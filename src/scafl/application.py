@@ -5,14 +5,13 @@ gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, Gio, GLib # type: ignore
 # fmt: on
 
-from steam_user_badges import SteamUserBadges
-from gui.steam_login_webview import SteamLoginWebview
-from gui.scafl_window import ScaflWindow
+from scafl import settings, startup
+from scafl.steam_user_badges import SteamUserBadges
+from scafl.gui.steam_login_webview import SteamLoginWebview
+from scafl.gui.scafl_window import ScaflWindow
 from threading import Timer
-import settings
 import time
 import threading
-import startup
 import subprocess
 
 

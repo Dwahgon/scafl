@@ -1,6 +1,6 @@
 from gi.repository import Gio, Gtk  # type: ignore
 
-from gui.components.badge_box import BadgeBox
+from scafl.gui.components.badge_box import BadgeBox
 
 
 class ScaflWindow(Gtk.ApplicationWindow):

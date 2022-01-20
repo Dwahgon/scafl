@@ -1,4 +1,4 @@
-import settings
+from scafl import settings
 import os
 
 DIRECTORIES = [settings.DATA_DIR]

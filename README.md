@@ -7,12 +7,79 @@ ScafL features an interface built using Gtk.
 
 This project was made specifically for the "Linux Gamers". Other operating systems may be suported in the future.
 
-## Running the application
+## Installing the application
 
-First, you need to have Python 3 and pip installed on your Linux machine. Check the instructions for your Linux distribution to install these dependencies.
-To download the application, click the green "Code" button on the Github and click "Download ZIP".
-After downloading the zip folder, extract it, and open the project's directory on a terminal (use `cd /path/to/scafl` command, or right-click the directory and click "open in terminal") and run `pip install -r requirements.txt`.
-After that, run `python src/main.py`
+To install ScafL, you first need Python 3.6+ installed and pip. Check your Linux distribution on how to install both of these dependencies.
+
+### Installing on your system
+
+To install ScafL on your system, you need to ensure that GTK and PyGObject is installed on your system. Check your Linux distribution on how to install both of these dependencies.
+Then run the following command on your terminal:
+
+```sh
+$ python -m scafl
+```
+
+### Installing inside a virtual environment
+
+If you want to install the project in a virtual environment, to avoid any dependency conflict, first ensure venv is installed. Then, run the following
+
+```sh
+$ python -m venv /path/to/your/virtual/environment
+$ source /path/to/your/virtual/environment/bin/activate
+```
+
+Now, while still in your virtual environment, install the package by running the following command:
+
+```sh
+(env) $ pip install scafl pygobject
+```
+
+You now have ScafL installed on your virtual environment. This means that every time you want to run ScafL, you need to have the virtual environment activated, which is done by running:
+
+```sh
+$ source /path/to/your/virtual/environment/bin/activate
+```
+
+To run ScafL, run this command on your terminal:
+
+```sh
+python -m scafl
+```
+
+To exit the virtual environment, run:
+
+```sh
+(env) $ deactivate
+```
+
+### Running from source
+
+To run ScafL from source, it is recommended that you run it on a virtual environment. To create a virtual environment, run the following command inside the project directory:
+
+```sh
+$ python -m venv .env
+```
+
+Then, activate the virtual environment:
+
+```sh
+$ source .env/bin/activate
+```
+
+After activating the virtual environment, install the project's dependencies:
+
+```sh
+(env) $ pip install -e .
+(env) $ pip install pygobject
+```
+
+To run the project, you must have the virtual environment activated. After ensuring that you're in a virtual environment, run:
+
+```sh
+(env) $ python path/to/main.py
+```
+
 
 ## Suport the project!
 
