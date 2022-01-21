@@ -5,12 +5,13 @@ gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, Gio, GLib # type: ignore
 # fmt: on
 
-from scafl import settings, startup
+from scafl import settings, startup, utils
 from scafl.steam_user_badges import SteamUserBadges
 from scafl.gui.steam_login_webview import SteamLoginWebview
 from scafl.gui.scafl_window import ScaflWindow
 from threading import Timer
 import time
+import os
 import threading
 import subprocess
 
@@ -26,12 +27,18 @@ class Application(Gtk.Application):
         self.steam_user_badges = None
         self.steam_idle_proc = None
         self.badges_to_idle = []
+        self._steam_api = None
         self._cycles_without_card_drops = 0
         self._idling_badge_id = 0
         self._badge_loading_thread = None
         self.window = None
         self._new_timer()
 
+        try:
+            self._steam_api = utils.load_steam_api()
+        except OSError as err:
+            print(f"OS Error: {err}")
+            self.quit()
         # TODO: Add command line support
 
     def do_startup(self):
@@ -97,6 +104,14 @@ class Application(Gtk.Application):
             or self.badges_to_idle is None
             or len(self.badges_to_idle) == 0
         ):
+            return
+
+        if (
+            self._steam_api is not None
+            and not self._steam_api.SteamAPI_IsSteamRunning()
+            and self.window is not None
+        ):
+            self.window.show_steam_not_running_dialog()
             return
 
         self.is_idling = True

@@ -149,6 +149,20 @@ class ScaflWindow(Gtk.ApplicationWindow):
         self.badges_screen.hide()
         self.loading_screen.hide()
 
+    def show_steam_not_running_dialog(self):
+        dialog = Gtk.MessageDialog(
+            transient_for=self,
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text="Steam is not running",
+        )
+        dialog.format_secondary_text(
+            "ScafL is unable to idle Steam games while Steam is not running. Please start Steam, then try again."
+        )
+        dialog.run()
+        dialog.destroy()
+
     def _update_idle_status_label(self, status="Nothing"):
         self.idle_status_label.set_markup(f"<big>Currently idling: {status}</big>")
 
