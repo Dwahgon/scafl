@@ -1,15 +1,16 @@
 import os
 import sys
 import platform
+import settings
 from ctypes import CDLL
 
 
 def load_steam_api():
     if sys.platform.startswith("linux"):
         if platform.architecture()[0].startswith("32bit"):
-            return CDLL("lib/libsteam_api32.so")
+            return CDLL(settings.STEAMAPI_PATH)
         elif platform.architecture()[0].startswith("64bit"):
-            return CDLL("lib64/libsteam_api64.so")
+            return CDLL(settings.STEAMAPI64_PATH)
 
         print("Architecture not supported")
         sys.exit()

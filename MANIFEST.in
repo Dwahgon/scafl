@@ -1,2 +1,2 @@
-recursive-include lib *
-recursive-include lib64 *
+recursive-include src/scafl/lib *
+recursive-include src/scafl/lib64 *
