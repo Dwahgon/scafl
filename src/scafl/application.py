@@ -83,7 +83,7 @@ class Application(Gtk.Application):
             self._stop_steam_idle_proc()
 
         self.steam_idle_proc = subprocess.Popen(
-            ["python", "src/steam_idle_proc.py", game_id]
+            ["python", settings.STEAM_IDLE_PROC_PATH, game_id]
         )
 
     def _stop_steam_idle_proc(self):
