@@ -18,6 +18,7 @@ import subprocess
 
 class Application(Gtk.Application):
     IDLE_TIMEOUT = 5 * 60.0
+    CYCLES_FOR_IDLE_RESTART = 3
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -178,6 +179,7 @@ class Application(Gtk.Application):
             return
 
         self._cycles_without_card_drops += 1
+        self._new_timer()
         self._idle_timer.start()
 
     def _thread_load_badges_func(self):
