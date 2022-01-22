@@ -84,6 +84,18 @@ class Application(Gtk.Application):
             self._stop_idling()
             self.load_badges()
 
+    def sort_games(self, sort_method, ascending=True):
+        sort_func = lambda e: e["name"]
+        if sort_method == "drop_count":
+            sort_func = lambda e: e["drop_count"]
+        elif sort_method != "name":
+            # TODO: Throw exception here
+            pass
+        self.badges_to_idle.sort(reverse=not ascending, key=sort_func)
+
+        if self.window is not None:
+            self.window.set_badge_list(self.badges_to_idle)
+
     def _start_steam_idle_proc(self, game_id):
         if self.steam_idle_proc is not None:
             print("Steam idle process is already running. Terminating it...")

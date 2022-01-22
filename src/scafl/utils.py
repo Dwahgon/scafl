@@ -14,3 +14,7 @@ def load_steam_api():
         raise OSError("Unsupported architecture")
 
     raise OSError("Unsupported operating system")
+
+
+def format_snake_case(string):
+    return " ".join([word.capitalize() for word in string.split("_")])

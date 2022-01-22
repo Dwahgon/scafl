@@ -1,11 +1,13 @@
 from gi.repository import Gio, Gtk  # type: ignore
 
 from scafl.gui.components.badge_box import BadgeBox
+from scafl import utils
 
 
 class ScaflWindow(Gtk.ApplicationWindow):
     DEFAULT_WIDTH = 800
     DEFAULT_HEIGHT = 600
+    SORT_METHODS = ["name", "drop_count"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(
@@ -55,6 +57,22 @@ class ScaflWindow(Gtk.ApplicationWindow):
         refresh_image = Gtk.Image.new_from_gicon(refresh_icon, Gtk.IconSize.BUTTON)
         refresh_button.add(refresh_image)
 
+        sort_popover = Gtk.Popover()
+        sort_popover_vbox = Gtk.VBox(margin=4)
+        sort_popover_vbox.pack_start(Gtk.Label(label="Sort games"), False, True, 5)
+        sort_popover_vbox.pack_start(Gtk.Separator(), False, True, 5)
+        self._sort_ascending_check = Gtk.CheckButton(label="Sort ascending")
+        self._sort_ascending_check.set_active(True)
+        sort_popover_vbox.pack_start(self._sort_ascending_check, False, True, 4)
+        for method in self.SORT_METHODS:
+            button = Gtk.ModelButton(label=utils.format_snake_case(method))
+            button.connect("clicked", self._on_sort_method_button_clicked, method)
+            sort_popover_vbox.pack_start(button, False, True, 0)
+        sort_popover_vbox.show_all()
+        sort_popover.add(sort_popover_vbox)
+        sort_popover.set_position(Gtk.PositionType.BOTTOM)
+        sorting_dropdown_button = Gtk.MenuButton(popover=sort_popover)
+
         # TODO: Create menu button
         # hamburger_button = Gtk.Button()
         # hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
@@ -62,6 +80,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
         # hamburger_button.add(hamburger_image)
 
         headerbar.pack_start(refresh_button)
+        headerbar.pack_end(sorting_dropdown_button)
         # headerbar.pack_end(hamburger_button)
 
     def _create_status_section(self):
@@ -128,6 +147,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
         for badge in badges:
             badgebox = BadgeBox(badge)
             self.badges_screen_viewport.pack_start(badgebox, False, False, 0)
+            badgebox.show_all()
 
     def set_not_idling(self):
         self._update_idle_status_label()
@@ -177,3 +197,8 @@ class ScaflWindow(Gtk.ApplicationWindow):
 
     def _on_idle_clicked(self, _):
         self.get_application().toggle_idling()
+
+    def _on_sort_method_button_clicked(self, _, *data):
+        self.get_application().sort_games(
+            data[0], self._sort_ascending_check.get_active()
+        )
