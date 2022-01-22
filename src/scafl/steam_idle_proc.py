@@ -1,6 +1,6 @@
 import os
 import sys
-import utils
+from scafl import utils
 
 
 def main():

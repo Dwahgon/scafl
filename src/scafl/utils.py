@@ -1,6 +1,6 @@
 import sys
 import platform
-import settings
+from scafl import settings
 from ctypes import CDLL
 
 
