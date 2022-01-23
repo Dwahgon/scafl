@@ -57,10 +57,18 @@ class ScaflWindow(Gtk.ApplicationWindow):
         refresh_image = Gtk.Image.new_from_gicon(refresh_icon, Gtk.IconSize.BUTTON)
         refresh_button.add(refresh_image)
 
+        # TODO: Create menu button
+        # hamburger_button = Gtk.Button()
+        # hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
+        # hamburger_image = Gtk.Image.new_from_gicon(hamburger_icon, Gtk.IconSize.BUTTON)
+        # hamburger_button.add(hamburger_image)
+        # headerbar.pack_end(hamburger_button)
+
+        headerbar.pack_start(refresh_button)
+
+    def _create_sort_button(self):
         sort_popover = Gtk.Popover()
         sort_popover_vbox = Gtk.VBox(margin=4)
-        sort_popover_vbox.pack_start(Gtk.Label(label="Sort games"), False, True, 5)
-        sort_popover_vbox.pack_start(Gtk.Separator(), False, True, 5)
         self._sort_ascending_check = Gtk.CheckButton(label="Sort ascending")
         self._sort_ascending_check.set_active(True)
         sort_popover_vbox.pack_start(self._sort_ascending_check, False, True, 4)
@@ -72,16 +80,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
         sort_popover.add(sort_popover_vbox)
         sort_popover.set_position(Gtk.PositionType.BOTTOM)
         sorting_dropdown_button = Gtk.MenuButton(popover=sort_popover)
-
-        # TODO: Create menu button
-        # hamburger_button = Gtk.Button()
-        # hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
-        # hamburger_image = Gtk.Image.new_from_gicon(hamburger_icon, Gtk.IconSize.BUTTON)
-        # hamburger_button.add(hamburger_image)
-
-        headerbar.pack_start(refresh_button)
-        headerbar.pack_end(sorting_dropdown_button)
-        # headerbar.pack_end(hamburger_button)
+        return sorting_dropdown_button
 
     def _create_status_section(self):
         status_hbox = Gtk.HBox(margin=4)
@@ -128,10 +127,25 @@ class ScaflWindow(Gtk.ApplicationWindow):
         return connect_steam_box
 
     def _create_badges_screen(self):
+        badges_screen_vbox = Gtk.VBox()
+
+        options_vbox = Gtk.VBox(margin=6)
+        sort_hbox = Gtk.HBox()
+        sort_hbox.pack_start(Gtk.Label(label="Sort games: "), False, False, 0)
+        sort_hbox.pack_start(self._create_sort_button(), False, False, 0)
+
         scroll_window = Gtk.ScrolledWindow()
         self.badges_screen_viewport = Gtk.VBox()
         scroll_window.add_with_viewport(self.badges_screen_viewport)
-        return scroll_window
+
+        options_vbox.pack_start(sort_hbox, False, False, 0)
+        badges_screen_vbox.pack_start(options_vbox, False, False, 0)
+        badges_screen_vbox.pack_start(
+            Gtk.Separator(margin_start=6, margin_end=6), False, False, 0
+        )
+        badges_screen_vbox.pack_start(scroll_window, True, True, 0)
+
+        return badges_screen_vbox
 
     def set_idle_button_active(self, active=True):
         self.idle_button.set_sensitive(active)
