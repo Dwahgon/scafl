@@ -4,12 +4,15 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gio, GdkPixbuf # type: ignore
 # fmt: on
 import urllib.request
+from scafl import settings
 
 
 class BadgeBox(Gtk.Frame):
-    def __init__(self, game, *args, **kwargs):
+    def __init__(self, game, set_game_blacklist_func, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self._set_game_blacklist_func = set_game_blacklist_func
+        self.game = game
         self.props.margin = 6
         self.props.margin_right = 14
 
@@ -35,6 +38,15 @@ class BadgeBox(Gtk.Frame):
         drops_left = Gtk.Label()
         drops_left.set_text(f'{game["drop_count"]} cards left')
         drops_left.props.xalign = 0
+
+        blacklist_checkbox = Gtk.CheckButton(label="Blacklist game")
+        blacklist_checkbox.set_active(self.game["id"] in settings.blacklist)
+        blacklist_checkbox.connect("toggled", self._on_blacklist_toggle)
+
         data_wrapper.pack_start(game_title_label, True, True, 0)
-        data_wrapper.pack_end(drops_left, True, True, 0)
+        data_wrapper.pack_start(drops_left, True, True, 0)
+        data_wrapper.pack_start(blacklist_checkbox, True, True, 0)
         main_hbox.pack_start(data_wrapper, False, False, 0)
+
+    def _on_blacklist_toggle(self, widget):
+        self._set_game_blacklist_func(self.game["id"], widget.get_active())

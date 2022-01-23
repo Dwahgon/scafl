@@ -127,9 +127,11 @@ class Application(Gtk.Application):
             self.window.show_steam_not_running_dialog()
             return
 
-        self.is_idling = True
+        self.idling_badge = self._get_next_badge_to_idle()
+        if self.idling_badge is None:
+            return
 
-        self.idling_badge = self.badges_to_idle[0]
+        self.is_idling = True
         self.window.set_idling(self.idling_badge)
 
         self._start_steam_idle_proc(self.idling_badge["id"])
@@ -146,6 +148,12 @@ class Application(Gtk.Application):
         self._stop_steam_idle_proc()
         self._idle_timer.cancel()
         self._new_timer()
+
+    def _get_next_badge_to_idle(self):
+        for badge in self.badges_to_idle:
+            if badge["id"] not in settings.blacklist:
+                return badge
+        return None
 
     def _new_timer(self):
         self._idle_timer = Timer(self.IDLE_TIMEOUT, self._on_idle_timeout)
@@ -207,6 +215,12 @@ class Application(Gtk.Application):
         )
         self._badge_loading_thread.start()
 
+    def set_game_blacklisted(self, game_id, is_blacklisted):
+        if is_blacklisted:
+            settings.blacklist.add_game(game_id)
+        else:
+            settings.blacklist.remove_game(game_id)
+
     def _on_steam_login_webview_close(self, widget):
         if self.window is None:
             return
@@ -230,7 +244,10 @@ class Application(Gtk.Application):
 
     @property
     def idling_badge(self):
-        return next(x for x in self.badges_to_idle if x["id"] == self.idling_badge_id)
+        badge_search = [
+            x for x in self.badges_to_idle if x["id"] == self.idling_badge_id
+        ]
+        return None if len(badge_search) == 0 else badge_search[0]
 
     @idling_badge.setter
     def idling_badge(self, value):

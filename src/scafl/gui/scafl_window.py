@@ -159,7 +159,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
         for badge_widget in self.badges_screen_viewport.get_children():
             badge_widget.destroy()
         for badge in badges:
-            badgebox = BadgeBox(badge)
+            badgebox = BadgeBox(badge, self.get_application().set_game_blacklisted)
             self.badges_screen_viewport.pack_start(badgebox, False, False, 0)
             badgebox.show_all()
 

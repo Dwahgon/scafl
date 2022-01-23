@@ -1,7 +1,10 @@
 from scafl import settings
 import os
 
-DIRECTORIES = [settings.DATA_DIR]
+DIRECTORIES = [
+    settings.DATA_DIR,
+    settings.CONFIG_DIR,
+]
 
 
 def _init_dirs():
