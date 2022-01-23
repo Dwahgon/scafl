@@ -1,7 +1,7 @@
 from gi.repository import Gio, Gtk  # type: ignore
 
 from scafl.gui.components.badge_box import BadgeBox
-from scafl import utils
+from scafl import utils, settings
 
 
 class ScaflWindow(Gtk.ApplicationWindow):
@@ -19,6 +19,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
             **kwargs,
         )
 
+        self._badges = []
         self._init_widgets()
         self.set_not_idling()
 
@@ -130,15 +131,20 @@ class ScaflWindow(Gtk.ApplicationWindow):
         badges_screen_vbox = Gtk.VBox()
 
         options_vbox = Gtk.VBox(margin=6)
+        first_options_row = Gtk.HBox()
         sort_hbox = Gtk.HBox()
         sort_hbox.pack_start(Gtk.Label(label="Sort games: "), False, False, 0)
         sort_hbox.pack_start(self._create_sort_button(), False, False, 0)
+        self._hide_blacklisted = Gtk.CheckButton(label="Hide blacklisted badges")
+        self._hide_blacklisted.connect("toggled", self._on_hide_blacklisted_toggled)
 
         scroll_window = Gtk.ScrolledWindow()
         self.badges_screen_viewport = Gtk.VBox()
         scroll_window.add_with_viewport(self.badges_screen_viewport)
 
-        options_vbox.pack_start(sort_hbox, False, False, 0)
+        first_options_row.pack_start(sort_hbox, False, False, 0)
+        first_options_row.pack_end(self._hide_blacklisted, False, False, 0)
+        options_vbox.pack_start(first_options_row, False, False, 0)
         badges_screen_vbox.pack_start(options_vbox, False, False, 0)
         badges_screen_vbox.pack_start(
             Gtk.Separator(margin_start=6, margin_end=6), False, False, 0
@@ -159,9 +165,17 @@ class ScaflWindow(Gtk.ApplicationWindow):
         for badge_widget in self.badges_screen_viewport.get_children():
             badge_widget.destroy()
         for badge in badges:
-            badgebox = BadgeBox(badge, self.get_application().set_game_blacklisted)
-            self.badges_screen_viewport.pack_start(badgebox, False, False, 0)
-            badgebox.show_all()
+            if (
+                not self._hide_blacklisted.get_active()
+                or not badge["id"] in settings.blacklist
+            ):
+                badgebox = BadgeBox(badge)
+                badgebox.blacklist_checkbox.connect(
+                    "toggled", self._on_set_blacklist_toggle, badge["id"]
+                )
+                self.badges_screen_viewport.pack_start(badgebox, False, False, 0)
+                badgebox.show_all()
+        self._badges = badges
 
     def set_not_idling(self):
         self._update_idle_status_label()
@@ -216,3 +230,10 @@ class ScaflWindow(Gtk.ApplicationWindow):
         self.get_application().sort_games(
             data[0], self._sort_ascending_check.get_active()
         )
+
+    def _on_hide_blacklisted_toggled(self, _):
+        self.set_badge_list(self._badges)
+
+    def _on_set_blacklist_toggle(self, widget, game_id):
+        self.get_application().set_game_blacklisted(game_id, widget.get_active())
+        self.set_badge_list(self._badges)
