@@ -33,7 +33,7 @@ $ source /path/to/your/virtual/environment/bin/activate
 Now, while still in your virtual environment, install the package by running the following command:
 
 ```sh
-(env) $ pip install scafl pygobject
+(env) $ pip install pycairo pygobject scafl
 ```
 
 You now have ScafL installed on your virtual environment. This means that every time you want to run ScafL, you need to have the virtual environment activated, which is done by running:
@@ -72,7 +72,7 @@ After activating the virtual environment, install the project's dependencies:
 
 ```sh
 (env) $ pip install -e .
-(env) $ pip install pygobject
+(env) $ pip install pycairo pygobject
 ```
 
 To run the project, you must have the virtual environment activated. After ensuring that you're in a virtual environment, run:
