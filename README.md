@@ -13,7 +13,7 @@ To install ScafL, you first need Python 3.6+ installed and pip. Check your Linux
 
 ### Installing on your system
 
-To install ScafL on your system, you need to ensure that GTK and PyGObject is installed on your system. Check your Linux distribution on how to install both of these dependencies.
+To install ScafL on your system, you need to ensure that [GTK and PyGObject is installed on your system](https://pygobject.readthedocs.io/en/latest/getting_started.html).
 Then run the following command on your terminal:
 
 ```sh
