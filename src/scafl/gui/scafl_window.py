@@ -136,6 +136,9 @@ class ScaflWindow(Gtk.ApplicationWindow):
         sort_hbox.pack_start(Gtk.Label(label="Sort games: "), False, False, 0)
         sort_hbox.pack_start(self._create_sort_button(), False, False, 0)
         self._hide_blacklisted = Gtk.CheckButton(label="Hide blacklisted badges")
+        self._hide_blacklisted.set_active(
+            bool(settings.read_conf("hide_blacklisted", default=False))
+        )
         self._hide_blacklisted.connect("toggled", self._on_hide_blacklisted_toggled)
 
         scroll_window = Gtk.ScrolledWindow()
@@ -231,7 +234,8 @@ class ScaflWindow(Gtk.ApplicationWindow):
             data[0], self._sort_ascending_check.get_active()
         )
 
-    def _on_hide_blacklisted_toggled(self, _):
+    def _on_hide_blacklisted_toggled(self, widget):
+        settings.write_conf("hide_blacklisted", widget.get_active())
         self.set_badge_list(self._badges)
 
     def _on_set_blacklist_toggle(self, widget, game_id):
