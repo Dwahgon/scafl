@@ -176,15 +176,26 @@ class Application(Gtk.Application):
             self._cycles_without_card_drops = 0
 
         old_drop_count = self.idling_badge["drop_count"]
+        self.idling_badge = self.steam_user_badges.get_badge_data(
+            self.idling_badge["id"]
+        )
         self.update_badge(self.idling_badge)
         if old_drop_count != self.idling_badge["drop_count"]:
             self._cycles_without_card_drops = 0
 
         if self.idling_badge["drop_count"] == 0:
-            self._stop_idling()
-            self.load_badges()
+            self._stop_steam_idle_proc()
+
+            self.badges_to_idle.remove(self.idling_badge)
+            if self.window is not None:
+                self.window.set_badge_list(self.badges_to_idle)
+
+            self._new_timer()
             self._start_idling()
             return
+
+        if self.window is not None:
+            self.window.set_badge_list(self.badges_to_idle)
 
         self._cycles_without_card_drops += 1
         self._new_timer()
