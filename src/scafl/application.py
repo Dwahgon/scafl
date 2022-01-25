@@ -158,9 +158,6 @@ class Application(Gtk.Application):
     def _new_timer(self):
         self._idle_timer = Timer(self.IDLE_TIMEOUT, self._on_idle_timeout)
 
-    def update_badge(self, badge):
-        self.badges_to_idle[self.badges_to_idle.index(self.idling_badge)] = badge
-
     def _on_idle_timeout(self):
         if self.idling_badge is None or self.steam_user_badges is None:
             return
@@ -176,10 +173,7 @@ class Application(Gtk.Application):
             self._cycles_without_card_drops = 0
 
         old_drop_count = self.idling_badge["drop_count"]
-        self.idling_badge = self.steam_user_badges.get_badge_data(
-            self.idling_badge["id"]
-        )
-        self.update_badge(self.idling_badge)
+        self.steam_user_badges.update_badge(self.idling_badge)
         if old_drop_count != self.idling_badge["drop_count"]:
             self._cycles_without_card_drops = 0
 

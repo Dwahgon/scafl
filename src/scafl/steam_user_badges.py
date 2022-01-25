@@ -90,6 +90,15 @@ class SteamUserBadges:
             return "0"
         return badge_link.split("/gamecards/", 1)[1].replace("/", "")
 
+    def update_badge(self, badge_obj):
+        request = requests.get(
+            self.profile_url + "/gamecards/" + badge_obj["id"] + "/",
+            cookies=self.cookies,
+        )
+        badge_data = bs4.BeautifulSoup(request.text, "html.parser")
+        # badge_obj["name"] = self.get_badge_node_game_name(badge_data) # No need to update name
+        badge_obj["drop_count"] = self.get_badge_node_drop_count(badge_data)
+
     def _new_badge_dict(
         self, badge_id="0", badge_name="Badge Name", badge_drop_count=0
     ):
