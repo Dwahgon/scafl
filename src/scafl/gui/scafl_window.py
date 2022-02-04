@@ -70,12 +70,15 @@ class ScaflWindow(Gtk.ApplicationWindow):
 
         bug_report_button = Gtk.ModelButton(label="Report a Bug")
         bug_report_button.connect("clicked", self._on_bug_report_button_clicked)
+        bug_report_button.props.xalign = 0.0
 
         donation_button = Gtk.ModelButton(label="Donate to the creator!")
         donation_button.connect("clicked", self._on_donate_button_clicked)
+        donation_button.props.xalign = 0.0
 
         about_button = Gtk.ModelButton(label="About ScafL")
         about_button.connect("clicked", self._on_about_button_clicked)
+        about_button.props.xalign = 0.0
 
         popover_vbox.pack_start(bug_report_button, False, True, 0)
         popover_vbox.pack_start(donation_button, False, True, 0)
@@ -99,6 +102,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
         for method in self.SORT_METHODS:
             button = Gtk.ModelButton(label=utils.format_snake_case(method))
             button.connect("clicked", self._on_sort_method_button_clicked, method)
+            button.props.xalign = 0.0
             sort_popover_vbox.pack_start(button, False, True, 0)
         sort_popover_vbox.show_all()
         sort_popover.add(sort_popover_vbox)
