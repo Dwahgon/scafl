@@ -1,7 +1,10 @@
 from gi.repository import Gio, Gtk  # type: ignore
 
+from scafl.gui.about_dialog import AboutDialog
 from scafl.gui.components.badge_box import BadgeBox
 from scafl import utils, settings
+
+import os
 
 
 class ScaflWindow(Gtk.ApplicationWindow):
@@ -58,14 +61,34 @@ class ScaflWindow(Gtk.ApplicationWindow):
         refresh_image = Gtk.Image.new_from_gicon(refresh_icon, Gtk.IconSize.BUTTON)
         refresh_button.add(refresh_image)
 
-        # TODO: Create menu button
-        # hamburger_button = Gtk.Button()
-        # hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
-        # hamburger_image = Gtk.Image.new_from_gicon(hamburger_icon, Gtk.IconSize.BUTTON)
-        # hamburger_button.add(hamburger_image)
-        # headerbar.pack_end(hamburger_button)
-
         headerbar.pack_start(refresh_button)
+        headerbar.pack_end(self._create_menu_button())
+
+    def _create_menu_button(self):
+        popover = Gtk.Popover()
+        popover_vbox = Gtk.VBox(margin=4)
+
+        bug_report_button = Gtk.ModelButton(label="Report a Bug")
+        bug_report_button.connect("clicked", self._on_bug_report_button_clicked)
+
+        donation_button = Gtk.ModelButton(label="Donate to the creator!")
+        donation_button.connect("clicked", self._on_donate_button_clicked)
+
+        about_button = Gtk.ModelButton(label="About ScafL")
+        about_button.connect("clicked", self._on_about_button_clicked)
+
+        popover_vbox.pack_start(bug_report_button, False, True, 0)
+        popover_vbox.pack_start(donation_button, False, True, 0)
+        popover_vbox.pack_start(about_button, False, True, 0)
+        popover_vbox.show_all()
+        popover.add(popover_vbox)
+
+        hamburger_button = Gtk.MenuButton(popover=popover)
+        hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
+        hamburger_image = Gtk.Image.new_from_gicon(hamburger_icon, Gtk.IconSize.BUTTON)
+        hamburger_button.add(hamburger_image)
+
+        return hamburger_button
 
     def _create_sort_button(self):
         sort_popover = Gtk.Popover()
@@ -241,3 +264,13 @@ class ScaflWindow(Gtk.ApplicationWindow):
     def _on_set_blacklist_toggle(self, widget, game_id):
         self.get_application().set_game_blacklisted(game_id, widget.get_active())
         self.set_badge_list(self._badges)
+
+    def _on_bug_report_button_clicked(self, _):
+        os.system(f"xdg-open {settings.BUG_REPORT_URL}")
+
+    def _on_donate_button_clicked(self, _):
+        os.system(f"xdg-open {settings.DONATION_URL}")
+
+    def _on_about_button_clicked(self, _):
+        about_dialog = AboutDialog(transient_for=self, modal=True)
+        about_dialog.present()

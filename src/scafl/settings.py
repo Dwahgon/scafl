@@ -1,9 +1,16 @@
 import os
 from os.path import dirname, abspath
+from scafl import __version__
 from scafl.blacklist import Blacklist
 from configparser import ConfigParser, ParsingError, NoOptionError, NoSectionError
 
-from gi.repository import GLib  # type: ignore
+from gi.repository import GLib, Gtk  # type: ignore
+
+APP_NAME = "ScafL"
+VERSION = __version__
+AUTHORS = ["Kawan Weege (Dragon Of War)"]
+PROGRAM_DESCRIPTION = "A Steam game idler for trading card drops"
+LICENSE_TYPE = Gtk.License.MIT_X11
 
 SCAFL_DIR = dirname(abspath(__file__))
 
@@ -19,6 +26,10 @@ LIB_DIR = os.path.join(SCAFL_DIR, "lib")
 LIB64_DIR = os.path.join(SCAFL_DIR, "lib64")
 STEAMAPI_PATH = os.path.join(LIB_DIR, "libsteam_api32.so")
 STEAMAPI64_PATH = os.path.join(LIB64_DIR, "libsteam_api64.so")
+
+GITHUB_URL = "https://github.com/DragonOfWar/scafl"
+BUG_REPORT_URL = "https://github.com/DragonOfWar/scafl/issues"
+DONATION_URL = "https://www.paypal.com/donate/?hosted_button_id=TSARHWQFKSEBA"
 
 blacklist = Blacklist(BLACKLIST_FILE)
 _config_parser = ConfigParser()
