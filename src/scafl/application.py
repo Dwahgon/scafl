@@ -183,6 +183,10 @@ class Application(Gtk.Application):
             self.badges_to_idle.remove(self.idling_badge)
             if self.window is not None:
                 self.window.set_badge_list(self.badges_to_idle)
+            
+            if len(self.badges_to_idle) == 0:
+                self._stop_idling()
+                return
 
             self._new_timer()
             self._start_idling()
