@@ -168,9 +168,15 @@ class ScaflWindow(Gtk.ApplicationWindow):
         )
         self._hide_blacklisted.connect("toggled", self._on_hide_blacklisted_toggled)
 
-        scroll_window = Gtk.ScrolledWindow()
+        self.no_badges_box = Gtk.VBox()
+        self.no_badges_box.set_vexpand(True)
+        self.no_badges_box.pack_start(
+            Gtk.Label(label="There are no games to idle!"), True, False, 0
+        )
+
+        self.scroll_window = Gtk.ScrolledWindow()
         self.badges_screen_viewport = Gtk.VBox()
-        scroll_window.add_with_viewport(self.badges_screen_viewport)
+        self.scroll_window.add_with_viewport(self.badges_screen_viewport)
 
         first_options_row.pack_start(sort_hbox, False, False, 0)
         first_options_row.pack_end(self._hide_blacklisted, False, False, 0)
@@ -179,7 +185,8 @@ class ScaflWindow(Gtk.ApplicationWindow):
         badges_screen_vbox.pack_start(
             Gtk.Separator(margin_start=6, margin_end=6), False, False, 0
         )
-        badges_screen_vbox.pack_start(scroll_window, True, True, 0)
+        badges_screen_vbox.pack_start(self.no_badges_box, True, True, 0)
+        badges_screen_vbox.pack_start(self.scroll_window, True, True, 0)
 
         return badges_screen_vbox
 
@@ -206,6 +213,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
                 self.badges_screen_viewport.pack_start(badgebox, False, False, 0)
                 badgebox.show_all()
         self._badges = badges
+        self._update_badges_screen()
 
     def set_not_idling(self):
         self._update_idle_status_label()
@@ -219,6 +227,7 @@ class ScaflWindow(Gtk.ApplicationWindow):
 
     def show_badges_screen(self):
         self.badges_screen.show_all()
+        self._update_badges_screen()
         self.loading_screen.hide()
         self.connect_steam_screen.hide()
 
@@ -240,6 +249,14 @@ class ScaflWindow(Gtk.ApplicationWindow):
         )
         dialog.run()
         dialog.destroy()
+
+    def _update_badges_screen(self):
+        if len(self._badges) > 0:
+            self.scroll_window.show()
+            self.no_badges_box.hide()
+        else:
+            self.scroll_window.hide()
+            self.no_badges_box.show()
 
     def _update_idle_status_label(self, status="Nothing"):
         self.idle_status_label.set_markup(f"<big>Currently idling: {status}</big>")
