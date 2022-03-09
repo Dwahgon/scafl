@@ -78,7 +78,7 @@ After activating the virtual environment, install the project's dependencies:
 To run the project, you must have the virtual environment activated. After ensuring that you're in a virtual environment, run:
 
 ```sh
-(env) $ python path/to/main.py
+(env) $ python src/scafl
 ```
 
 
