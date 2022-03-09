@@ -1,4 +1,4 @@
-from gi.repository import Gtk, WebKit2  # type: ignore
+from gi.repository import Gtk, WebKit2, GLib  # type: ignore
 
 
 class SteamLoginWebview(Gtk.Dialog):
@@ -40,4 +40,5 @@ class SteamLoginWebview(Gtk.Dialog):
         cookies_result: list = self.cookie_manager.get_cookies_finish(result)
         for cookie in cookies_result:
             self.steam_cookies[cookie.name] = cookie.value
-        self.destroy()
+        # Using self.destroy() directly will cause the application to crash on flatpak
+        GLib.idle_add(self.destroy)
