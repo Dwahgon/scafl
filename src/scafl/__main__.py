@@ -1,8 +1,10 @@
 import sys
 from os.path import dirname, abspath
 
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
+module_dir = dirname(dirname(abspath(__file__)))
+if sys.path[0] != module_dir:
+    sys.path.insert(0, module_dir)
 
-import scafl.main
+import scafl
 
-scafl.main.main()
+scafl.main()
