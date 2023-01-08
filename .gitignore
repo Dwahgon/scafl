@@ -153,3 +153,8 @@ cython_debug/
 
 # Ignore vscode folder
 .vscode/
+
+AppDir/
+*.AppImage
+*.AppImage.zsync
+appimage-build
