@@ -28,7 +28,7 @@ jobs:
       run: |
         appimage-builder-x86_64.AppImage --recipe AppImageBuilder-apt.yml
     - name: Release
-    - uses: "marvinpinto/action-automatic-releases@latest"
+      uses: "marvinpinto/action-automatic-releases@latest"
       env:
         SCAFL_VERSION: "$(python -c 'import src.scafl;print(src.scafl.__version__)')"
       with:
