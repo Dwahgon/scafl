@@ -9,11 +9,10 @@ This project was made specifically for the "Linux Gamers". Other operating syste
 
 ## Installing the application
 
-To install ScafL, you first need Python 3.6+ installed and pip. Check your Linux distribution on how to install both of these dependencies.
-
 ### Running from source
 
-To run ScafL from source, it is recommended that you run it on a virtual environment. To create a virtual environment, run the following command inside the project directory:
+To run ScafL from source, you first need Python 3.6+, pip and setuptools installled. Check your Linux distribution on how to install both of these dependencies.
+It is recommended that you run it on a virtual environment. To create a virtual environment, run the following command inside the project directory:
 
 ```sh
 $ python -m venv .env
