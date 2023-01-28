@@ -23,7 +23,7 @@ AppDir:
     id: io.github.ScafL
     name: ScafL
     icon: scafl
-    version: '{{SCAFL_VERSION}}'
+    version: '{{APPIMAGE_BUILD_VERSION}}'
     exec: usr/bin/python3
     exec_args: "$APPDIR/usr/bin/scafl $@"
 
@@ -62,6 +62,6 @@ AppDir:
       use_host_x: true
 
 AppImage:
-  update-information: 'gh-releases-zsync|AppImageCrafters|python-appimage-example|latest|python-appimage-*x86_64.AppImage.zsync'
+  update-information: None
   sign-key: None
   arch: x86_64

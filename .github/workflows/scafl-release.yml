@@ -1,0 +1,65 @@
+name: ScafL Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-appimage:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10.6
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10.6"
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        sudo apt install python3-setuptools
+        sudo add-apt-repository universe
+        sudo apt-get install desktop-file-utils
+        sudo apt install libfuse2 # Download dependencies for AppImage
+        sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0 # Download dependencies for PyGobject
+    - name: Check Python version
+      run: |
+        python3 --version
+    - name: Check pip version
+      run: |
+        python3 -m pip --version
+    - name: Get ScafL version
+      run: |
+        echo "SCAFL_VERSION=$(python -c 'import src.scafl;print(src.scafl.__version__)')" >> $GITHUB_ENV
+    - name: Get Release version
+      run: |
+        echo "RELEASE_VERSION=${{ env.SCAFL_VERSION }}" >> $GITHUB_ENV
+    - name: Check release versions
+      run: |
+        echo "ScafL Version: ${{ env.SCAFL_VERSION }}"
+        echo "Release Version: ${{ env.RELEASE_VERSION }}"
+    - name: Set up appimage-builder
+      run: |
+        wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+        chmod +x appimage-builder-x86_64.AppImage
+    - name: Build AppImage
+      env:
+          APPIMAGE_BUILD_VERSION: ${{ env.RELEASE_VERSION }}
+      run: |
+        ./appimage-builder-x86_64.AppImage --recipe AppImageBuilder-apt.yml --skip-test
+    - name: Remove AppImage builder
+      run: |
+        rm appimage-builder-x86_64.AppImage
+    - name: Release AppImage
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "${{ env.RELEASE_VERSION }}"
+        title: "ScafL ${{ env.RELEASE_VERSION }}"
+        prerelease: false
+        files: |
+          LICENSE
+          *.AppImage
