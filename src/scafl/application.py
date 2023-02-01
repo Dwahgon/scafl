@@ -10,8 +10,8 @@ from scafl.steam_user_badges import SteamUserBadges
 from scafl.gui.steam_login_webview import SteamLoginWebview
 from scafl.gui.scafl_window import ScaflWindow
 from threading import Timer
+from shutil import which
 import time
-import os
 import threading
 import subprocess
 
@@ -102,9 +102,16 @@ class Application(Gtk.Application):
             print("Steam idle process is already running. Terminating it...")
             self._stop_steam_idle_proc()
 
+        python_exec = self._get_python_exec()
+        if python_exec is None:
+            raise OSError("Python executable not found")
+
         self.steam_idle_proc = subprocess.Popen(
-            ["python", settings.STEAM_IDLE_PROC_PATH, game_id]
+            [python_exec, settings.STEAM_IDLE_PROC_PATH, game_id]
         )
+
+    def _get_python_exec(self):
+        return which("python") or which("python3")
 
     def _stop_steam_idle_proc(self):
         if self.steam_idle_proc is not None:
