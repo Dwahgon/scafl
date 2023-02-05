@@ -9,6 +9,12 @@ This project was made specifically for the "Linux Gamers". Other operating syste
 
 ## Installing the application
 
+### AppImage
+
+Download the latest version of the AppImage executable [here](https://github.com/Dwahgon/scafl/releases/latest).
+
+<b>Note: you must mark the file as executable.</b>
+
 ### Running from source
 
 To run ScafL from source, you first need Python 3.6+, pip and setuptools installled. Check your Linux distribution on how to install both of these dependencies.
